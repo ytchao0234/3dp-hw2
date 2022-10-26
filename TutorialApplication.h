@@ -72,6 +72,7 @@ private:
 	bool mFlg_EnableParticleSystem;
 	Entity* mEntity_Floor;
 	Entity* mEntity_Ground;
+	SceneNode* mSceneNode_Floor;
 	SceneNode* mSceneNode_Ground;
 	bool mFlg_Floor_Motion;
 	Real mFloor_USpeed, mFloor_VSpeed;

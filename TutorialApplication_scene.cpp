@@ -55,9 +55,12 @@ void BasicTutorial_00::createScene_Setup(void)
 	mVolQuery = mSceneMgr->createPlaneBoundedVolumeQuery(volList);
 
 	mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+	mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
 
 	ColourValue fadeColour(1.0, 1.0, 1.0);
 	mSceneMgr->setFog(FOG_LINEAR, fadeColour, 0, 1400, 1600);
+
+	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
 	mSelectionRect = new SelectionRectangle("selectionRect");
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(mSelectionRect);
@@ -74,9 +77,9 @@ void BasicTutorial_00::createLights()
 {
 	Light* light = mSceneMgr->createLight("Light1");
 	light->setType(Light::LT_POINT);
-	light->setPosition(Vector3(0, 0, 0));
-	light->setDiffuseColour(0.0, 0.0, 0.0);		
-	light->setSpecularColour(0.0, 0.0, 0.0);	
+	light->setPosition(Vector3(SystemParameter::radius * std::cos(0.0), 800, SystemParameter::radius * std::sin(0.0)));
+	light->setDiffuseColour(0.6, 0.6, 0.6);		
+	light->setSpecularColour(1.0, 1.0, 1.0);	
 	mLight_Point = light;
 	mLightSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	mLightSceneNode->attachObject(light);
@@ -85,10 +88,10 @@ void BasicTutorial_00::createLights()
 void BasicTutorial_00::createPlaneObjectResource()
 {
 	//
-	Plane plane(Vector3::UNIT_Y, 0);
+	Plane floor(Vector3::UNIT_Y, 0);
 	MeshManager::getSingleton().createPlane(
-		"ground", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		plane,
+		"floor", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		floor,
 		800, 800, 	// width, height
 		2, 2, 		// x- and y-segments
 		true, 		// normal
@@ -96,15 +99,41 @@ void BasicTutorial_00::createPlaneObjectResource()
 		5, 5, 		// x- and y-tiles
 		Vector3::UNIT_Z	// upward vector
 	);
-
+	Plane ground(Vector3::UNIT_Y, -30);
+	MeshManager::getSingleton().createPlane(
+		"ground", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		ground,
+		800, 800, 	// width, height
+		2, 2, 		// x- and y-segments
+		true, 		// normal
+		1, 		// num texture sets
+		5, 5, 		// x- and y-tiles
+		Vector3::UNIT_Z	// upward vector
+	);
 }
 
 void BasicTutorial_00::createGround()
 {
 	Entity* ent = nullptr;
 	ent = mSceneMgr->createEntity(
+		"GroundEntity_01", "floor");
+	//ent->setQueryFlags(0x0);
+    ent->setMaterialName("Examples/Rocky");
+    ent->setCastShadows(false);
+
+	mEntity_Floor = ent;
+	//
+	mSceneNode_Floor = mSceneMgr
+		->getRootSceneNode()
+		->createChildSceneNode( );
+
+	mSceneNode_Floor->attachObject(ent);
+
+	ent = mSceneMgr->createEntity(
 		"GroundEntity_02", "ground");
 	//ent->setQueryFlags(0x0);
+    ent->setMaterialName("Examples/BeachStones");
+    ent->setCastShadows(false);
 
 	mEntity_Ground = ent;
 	//

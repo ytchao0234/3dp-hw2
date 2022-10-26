@@ -16,6 +16,7 @@
 #include "TutorialApplication.h"
 #include "BasicTools.h"
 #include "reader_data.h"
+#include "SystemParameter.h"
 
 #include <iostream>
 #include <sstream>
@@ -29,6 +30,7 @@
 //
 using namespace Ogre;
 
+#define PI 3.1415926
 
 //
 // For an object pair, push the objects away from each other if they collide.
@@ -241,6 +243,16 @@ void BasicTutorial_00::updateParticleSystems()
 //
 void BasicTutorial_00::updateLight(Real dt) {
 	if (!mEnabledLightAnimation) return;
+
+	static Real angle = 0.0f;
+	Vector3 position = mLightSceneNode->getPosition();
+	angle += dt;
+	angle = (angle > 2 * PI) ? angle - 2 * PI : angle;
+	position.x = SystemParameter::radius * std::cos(angle);
+	position.z = SystemParameter::radius * std::sin(angle);
+	mLightSceneNode->setPosition(position);
+
+	std::cout << "angle: " << angle << std::endl;
 }
 
 //

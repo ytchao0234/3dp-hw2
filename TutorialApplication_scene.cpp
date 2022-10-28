@@ -57,8 +57,8 @@ void BasicTutorial_00::createScene_Setup(void)
 	mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 	mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
 
-	ColourValue fadeColour(1.0, 1.0, 1.0);
-	mSceneMgr->setFog(FOG_LINEAR, fadeColour, 0, 1400, 1600);
+	// ColourValue fadeColour(1.0, 1.0, 1.0);
+	// mSceneMgr->setFog(FOG_LINEAR, fadeColour, 0, 1400, 1600);
 
 	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
@@ -77,7 +77,7 @@ void BasicTutorial_00::createLights()
 {
 	Light* light = mSceneMgr->createLight("Light1");
 	light->setType(Light::LT_POINT);
-	light->setPosition(Vector3(SystemParameter::radius * std::cos(0.0), 800, SystemParameter::radius * std::sin(0.0)));
+	light->setPosition(SystemParameter::radius * std::cos(0.0), 800, SystemParameter::radius * std::sin(0.0));
 	light->setDiffuseColour(0.6, 0.6, 0.6);		
 	light->setSpecularColour(1.0, 1.0, 1.0);	
 	mLight_Point = light;
@@ -149,32 +149,25 @@ void BasicTutorial_00::createFloor()
 {
 }
 
-void BasicTutorial_00::createObjects()
+void BasicTutorial_00::createObjectGroup(int start, int number, int radius)
 {
-	//Ogre::LogManager::getSingletonPtr()->logMessage("*** createObjects( ) ***");
-	int i;
 	std::string petMeshName = READER_DATA::getMeshName_Pet();
 	float scale = READER_DATA::getMeshScale_Pet();
 	float yaw_angle_offset = READER_DATA::getYawAngleDegreeOffset_Pet();
+    
+	double x = 0, y = 20, z = 0, fx = 0;
+	int i = start;
 
-	mNumofObjects = 0;
-	int numRobots = 2;
-	Real r = 200;
-	for (int k = 0; k < numRobots; ++k, ++mNumofObjects)
-	{
+    for (int k = 0; k < number; k += 1, i +=1)
+    {
+        String entityName;
+		genNameUsingIndex("Robot", i, entityName);
+		mEntityArr[i] = mSceneMgr
+			->createEntity(entityName, petMeshName);
 
-		i = k;
-		String name;
-		genNameUsingIndex("r", i, name);
-
-		mEntityArr[i]
-			= mSceneMgr
-			->createEntity(name, petMeshName);
-			//->createEntity(name, "robot.mesh");
-		//->createEntity( name, "penguin.mesh" ); 
-
-		//mEntityArr[i]->setVisibilityFlags(VIS_MASK_MINMAP);
-
+        fx = k / (double) number;
+        x = radius * cos(fx * PI * 2);
+        z = radius * sin(fx * PI * 2);
 
 		mAnimationStateArr[i] = mEntityArr[i]->getAnimationState("Idle");
 		mMotionStateArr[i] = MOTION_TYPE_IDLE;
@@ -182,25 +175,35 @@ void BasicTutorial_00::createObjects()
 		mAnimationStateArr[i]->setEnabled(true);
 		mAnimationStateArr[i]->setLoop(true);
 
-		mSceneNodeArr[i]
-			= mSceneMgr
+		mSceneNodeArr[i] = mSceneMgr
 			->getRootSceneNode()
 			->createChildSceneNode();
 
 		mSceneNodeArr[i]->attachObject(mEntityArr[i]);
-		
 		mSceneNodeArr[i]->setScale(scale, scale, scale);
+		mSceneNodeArr[i]->setPosition(x, 0, z);
+		mSceneNodeArr[i]->setDirection(-x, 0, -z);
+		mSceneNodeArr[i]->yaw(Degree(yaw_angle_offset));
 
 		if (i == 0) {
-			mSceneNodeArr[i]->setScale(5, 5, 5);
+			mSceneNodeArr[i]->setScale(2, 2, 2);
 		}
-	}
+    }
+}
 
+void BasicTutorial_00::createObjects()
+{
+	//Ogre::LogManager::getSingletonPtr()->logMessage("*** createObjects( ) ***");
 
+	int numRobot1 = 30, radius1 = 300;
+	int numRobot2 = 20, radius2 = 200;
+	mNumofObjects = numRobot1 + numRobot2;
+
+	createObjectGroup(        0, numRobot1, radius1);
+	createObjectGroup(numRobot1, numRobot2, radius2);
 
 	//
 	mCurrentObject = mSceneNodeArr[0];
-
 }
 void BasicTutorial_00::createSphere()
 {
@@ -209,9 +212,13 @@ void BasicTutorial_00::createSphere()
 
 	Entity* sphere_ent
 		= mSceneMgr
-		->createEntity("s", "sphere.mesh");
+		->createEntity("Sphere", "sphere.mesh");
+	sphere_ent->setMaterialName("Examples/SphereMappedRustySteel");
 	sphere_scn->attachObject(sphere_ent);
-	sphere_scn->setScale(0.2, 0.2, 0.2);
+	auto bb = sphere_ent->getBoundingBox();
+	Real sizeX = bb.getMaximum().x - bb.getMinimum().x;
+	Real sf = 2.0 * mSphere_Radius / sizeX;
+	sphere_scn->setScale(sf, sf, sf);
 }
 
 void BasicTutorial_00::createScene(void)

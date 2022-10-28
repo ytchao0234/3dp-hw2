@@ -10,7 +10,7 @@
 using namespace std;
 
 // Initialize the static member variables.
-double SystemParameter::radius = 130;
+double SystemParameter::radius = 500;
 double SystemParameter::maxSpeed = 1.5;
 double SystemParameter::acceleration = 0.15;
 int SystemParameter::maxNumParticleSystems = 60;

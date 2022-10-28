@@ -27,6 +27,8 @@ using namespace Ogre;
 #define MOTION_TYPE_IDLE 1
 #define MOTION_TYPE_WALK 2
 
+#define PI 3.1415926
+
 class BasicTutorial_00 : public BaseApplication
 {
 public:
@@ -99,6 +101,7 @@ protected:
 	virtual void createLights();
 	virtual void createScene_Setup();
 	virtual void createScene_Setup_FX();
+	void createObjectGroup(int start, int number, int radius);
 	virtual void createObjects();
 	virtual void createSphere();
 	virtual void createScene(void);

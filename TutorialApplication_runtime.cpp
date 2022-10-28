@@ -30,7 +30,6 @@
 //
 using namespace Ogre;
 
-#define PI 3.1415926
 
 //
 // For an object pair, push the objects away from each other if they collide.
@@ -251,8 +250,6 @@ void BasicTutorial_00::updateLight(Real dt) {
 	position.x = SystemParameter::radius * std::cos(angle);
 	position.z = SystemParameter::radius * std::sin(angle);
 	mLightSceneNode->setPosition(position);
-
-	std::cout << "angle: " << angle << std::endl;
 }
 
 //

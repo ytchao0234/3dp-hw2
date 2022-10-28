@@ -53,6 +53,7 @@ void BasicTutorial_00::createScene_Setup(void)
 {
 	PlaneBoundedVolumeList volList;
 	mVolQuery = mSceneMgr->createPlaneBoundedVolumeQuery(volList);
+	mRaySceneQuery = mSceneMgr->createRayQuery(Ray());
 
 	mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 	mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
@@ -65,8 +66,8 @@ void BasicTutorial_00::createScene_Setup(void)
 	mSelectionRect = new SelectionRectangle("selectionRect");
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(mSelectionRect);
 	
-	//mSelectionRect->setLightMask(0);
-	//mSelectionRect->setCastShadows(false);
+	mSelectionRect->setLightMask(0);
+	mSelectionRect->setCastShadows(false);
 
 	mPetCounter = new DIGIT_STRING_DIALOGUE(mSceneMgr);
 
@@ -115,8 +116,7 @@ void BasicTutorial_00::createPlaneObjectResource()
 void BasicTutorial_00::createGround()
 {
 	Entity* ent = nullptr;
-	ent = mSceneMgr->createEntity(
-		"GroundEntity_01", "floor");
+	ent = mSceneMgr->createEntity("Floor", "floor");
 	//ent->setQueryFlags(0x0);
     ent->setMaterialName("Examples/Rocky");
     ent->setCastShadows(false);
@@ -129,8 +129,7 @@ void BasicTutorial_00::createGround()
 
 	mSceneNode_Floor->attachObject(ent);
 
-	ent = mSceneMgr->createEntity(
-		"GroundEntity_02", "ground");
+	ent = mSceneMgr->createEntity("Ground", "ground");
 	//ent->setQueryFlags(0x0);
     ent->setMaterialName("Examples/BeachStones");
     ent->setCastShadows(false);
@@ -182,7 +181,7 @@ void BasicTutorial_00::createObjectGroup(int start, int number, int radius)
 		mSceneNodeArr[i]->attachObject(mEntityArr[i]);
 		mSceneNodeArr[i]->setScale(scale, scale, scale);
 		mSceneNodeArr[i]->setPosition(x, 0, z);
-		mSceneNodeArr[i]->setDirection(-x, 0, -z);
+		mSceneNodeArr[i]->lookAt(Vector3(0, 0, 0), Node::TS_WORLD);
 		mSceneNodeArr[i]->yaw(Degree(yaw_angle_offset));
 
 		if (i == 0) {

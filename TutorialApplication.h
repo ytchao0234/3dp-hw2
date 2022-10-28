@@ -35,6 +35,7 @@ public:
 	BasicTutorial_00(void);
 
 private:
+	RaySceneQuery* mRaySceneQuery;
 	PlaneBoundedVolumeListSceneQuery* mVolQuery;
 	Real left, top, right, bottom;
 	SelectionRectangle* mSelectionRect;

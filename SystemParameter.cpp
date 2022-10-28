@@ -14,6 +14,7 @@ double SystemParameter::radius = 500;
 double SystemParameter::maxSpeed = 1.5;
 double SystemParameter::acceleration = 0.15;
 int SystemParameter::maxNumParticleSystems = 60;
+double SystemParameter::nearClipDistance = 5;
 
 SystemParameter::SystemParameter() 
 {

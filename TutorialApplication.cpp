@@ -23,6 +23,7 @@
 #include "BasicTools.h"
 #include "reader_config.h"
 #include "reader_data.h"
+#include "SystemParameter.h"
 
 using namespace Ogre;
 using namespace std;
@@ -89,7 +90,7 @@ void BasicTutorial_00::createCamera_Main(void)
 	mCamera->setPosition(Ogre::Vector3(0, 700, 750));
 	mCamera->lookAt(Ogre::Vector3(0, 0, 0));
 
-	mCamera->setNearClipDistance(5);
+	mCamera->setNearClipDistance(SystemParameter::nearClipDistance);
 
 	mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
@@ -105,7 +106,7 @@ void BasicTutorial_00::createCamera_MiniMap(void)
 	mCameraMap->setPosition(Ogre::Vector3(0, 10, 0));
 	mCameraMap->lookAt(Ogre::Vector3(0, 0, 0.001));
 
-	mCameraMap->setNearClipDistance(5);
+	mCameraMap->setNearClipDistance(SystemParameter::nearClipDistance);
 }
 
 //

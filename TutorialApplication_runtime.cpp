@@ -135,6 +135,7 @@ void BasicTutorial_00::setOffParticleSystem(
 
 void BasicTutorial_00::updateObjects_Positions(Real dt)
 {
+	mNumOfMovingObj = 0;
 	if (mFlgTarget == false) return;
 
 	for (int i = 0; i < mNumofObjects; ++i)
@@ -143,27 +144,24 @@ void BasicTutorial_00::updateObjects_Positions(Real dt)
 		if (flgShow == false) continue;
 		
 		++mNumOfMovingObj;
-		Vector3 d;
-		d = mTargetPosition - mSceneNodeArr[i]->getPosition();
-		Real len = d.length();
-		Real robotTargetDistance = len;
-		if (len!=0.0) d.normalise();
+		Vector3 direction = mTargetPosition - mSceneNodeArr[i]->getPosition();
+		Real robotTargetDistance = direction.length();
+		if (robotTargetDistance != 0.0)
+			direction.normalise();
 		Real walkSpeed = READER_DATA::getWalkSpeed();
 		Real walkDistance = walkSpeed * dt;
 
-		if (robotTargetDistance < 0.01) {
-			d = robotTargetDistance * 1.05 * d;
-			//Vector3::ZERO;
-
-		}
-		else {
-			d = d * walkDistance;
-			Vector3 robotLookAtPosition = mTargetPosition;
-			robotLookAtPosition.y = mSceneNodeArr[i]->getPosition().y;
+		if (robotTargetDistance < 1.0) {
+			mSceneNodeArr[i]->showBoundingBox(false);
+			continue;
 		}
 
-		mObjectDisplacement[i] = d;
-		mSceneNodeArr[i]->translate(d);
+		mObjectDisplacement[i] = direction * walkDistance;
+		Vector3 robotLookAtPosition = mTargetPosition;
+		robotLookAtPosition.y = mSceneNodeArr[i]->getPosition().y;
+		mSceneNodeArr[i]->translate(mObjectDisplacement[i]);
+		mSceneNodeArr[i]->lookAt(robotLookAtPosition, Node::TS_WORLD);
+		mSceneNodeArr[i]->yaw(Degree(READER_DATA::getYawAngleDegreeOffset_Pet()));
 	}
 }
 

@@ -21,6 +21,7 @@
 
 #include "TutorialApplication.h"
 #include "BasicTools.h"
+#include "SystemParameter.h"
 
 #include <iostream>
 #include <sstream>
@@ -75,23 +76,26 @@ int BasicTutorial_00::singleClickSelect(const OIS::MouseEvent& arg, OIS::MouseBu
 
 	Ray mRay = mTrayMgr->getCursorRay(mCamera);
 
-	RaySceneQuery* mRaySceneQuery = mSceneMgr->createRayQuery(Ray());
-
 	mRaySceneQuery->setSortByDistance(true);
-
 	mRaySceneQuery->setRay(mRay);
+
 	// Perform the scene query
 	RaySceneQueryResult& result = mRaySceneQuery->execute();
-	RaySceneQueryResult::iterator itr = result.begin();
+	RaySceneQueryResult::iterator itr;
 
 	// Get the results, set the camera height
 	// We are interested in the first intersection. It is ok to traverse all the results.
 
-	mCurrentObject = mSceneNodeArr[0];
-	if (mCurrentObject) {
-		bool flgShow = mCurrentObject->getShowBoundingBox();
-		mCurrentObject->showBoundingBox(!flgShow);
-		numSelectedObj = 1;
+	for (itr = result.begin(); itr != result.end(); ++itr)
+	{
+		if (itr->movable && itr->movable->getName().substr(0, 5) == "Robot")
+		{
+			mCurrentObject = itr->movable->getParentSceneNode();
+			bool flgShow = mCurrentObject->getShowBoundingBox();
+			mCurrentObject->showBoundingBox(!flgShow);
+			numSelectedObj = 1;
+			break;
+		}
 	}
 
 	return numSelectedObj;
@@ -111,13 +115,11 @@ int BasicTutorial_00::volumeSelection(
 		left = right;
 		right = tmp;
 	}
-	/*
 	if (bottom < top) {
 		Real tmp = bottom;
 		bottom = top;
 		top = tmp;
 	}
-	*/
 
 	//
 	// Do you know the mechanism?
@@ -131,6 +133,38 @@ int BasicTutorial_00::volumeSelection(
 	//
 	// Add your own stuff here
 	//
+	Ray topLeft     = mTrayMgr->screenToScene(mCamera, Vector2(nleft , ntop));
+	Ray topRight    = mTrayMgr->screenToScene(mCamera, Vector2(nright, ntop));
+	Ray bottomLeft  = mTrayMgr->screenToScene(mCamera, Vector2(nleft , nbottom));
+	Ray bottomRight = mTrayMgr->screenToScene(mCamera, Vector2(nright, nbottom));
+
+	PlaneBoundedVolume vol;
+	int np = 100;
+	double nd = SystemParameter::nearClipDistance;
+
+	vol.planes.push_back(Plane(topLeft.getPoint(nd), topRight.getPoint(nd), bottomRight.getPoint(nd)));
+	vol.planes.push_back(Plane(topLeft.getOrigin(), topLeft.getPoint(np), topRight.getPoint(np)));
+	vol.planes.push_back(Plane(topLeft.getOrigin(), bottomLeft.getPoint(np), topLeft.getPoint(np)));
+	vol.planes.push_back(Plane(bottomLeft.getOrigin(), bottomRight.getPoint(np), bottomLeft.getPoint(np)));
+	vol.planes.push_back(Plane(bottomRight.getOrigin(), topRight.getPoint(np), bottomRight.getPoint(np)));
+
+	PlaneBoundedVolumeList volList;
+	volList.push_back(vol);
+	mVolQuery->setVolumes(volList);
+
+	SceneQueryResult result = mVolQuery->execute();
+	SceneQueryResultMovableList::iterator itr;
+
+	for (itr = result.movables.begin(); itr != result.movables.end(); itr++)
+	{
+		if (*itr && (*itr)->getName().substr(0, 5) == "Robot")
+		{
+			mCurrentObject = (*itr)->getParentSceneNode();
+			bool flgShow = mCurrentObject->getShowBoundingBox();
+			mCurrentObject->showBoundingBox(!flgShow);
+			numSelectedObj++;
+		}
+	}
 
 	return numSelectedObj;
 
@@ -138,12 +172,24 @@ int BasicTutorial_00::volumeSelection(
 
 void BasicTutorial_00::computeTargetPosition()
 {
-	static bool flg = false;
+	Ray mRay = mTrayMgr->getCursorRay(mCamera);
 
-	mFlgTarget = true;
-	mTargetPosition = Vector3(400, 0, 0);
-	if (flg) mTargetPosition = Vector3::ZERO;
-	flg = !flg;
+	mRaySceneQuery->setSortByDistance(true);
+	mRaySceneQuery->setRay(mRay);
+
+	// Perform the scene query
+	RaySceneQueryResult& result = mRaySceneQuery->execute();
+	RaySceneQueryResult::iterator itr;
+
+	for (itr = result.begin(); itr != result.end(); ++itr)
+	{
+		if (itr->movable && itr->movable->getName() == "Floor")
+		{
+			mTargetPosition = mRay.getPoint(itr->distance);
+			mFlgTarget = true;
+			break;
+		}
+	}
 }
 
 
@@ -233,18 +279,12 @@ bool BasicTutorial_00::mouseReleased(const OIS::MouseEvent& arg, OIS::MouseButto
 	}
 	mFlgTarget = false;
 	if (mFlgSelectNow == true) {
-
-		for (int i = 0; i < mNumofObjects; ++i)
-		{
-			mSceneNodeArr[i]->showBoundingBox(false);
-		}
-		if (left == right
-			&&
-			top == bottom)
+		if (left == right && top == bottom)
 		{
 			mNumberOfPets = singleClickSelect(arg, id);
 		}
-		else {
+		else
+		{
 			mNumberOfPets = volumeSelection(arg, id);
 		}
 		mFlgSelectNow = false;

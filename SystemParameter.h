@@ -20,6 +20,7 @@ public:
     static double maxSpeed;
     static double acceleration;
     static int maxNumParticleSystems;
+    static double nearClipDistance;
 };
 
 #endif

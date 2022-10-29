@@ -83,6 +83,7 @@ private:
 
 	int mNumberOfPets;
 	DIGIT_STRING_DIALOGUE* mPetCounter;
+	DIGIT_STRING_DIALOGUE* mMovingObjectsCounter;
 
 	bool mEnabledObjectAnimation;
 	bool mEnabledLightAnimation;

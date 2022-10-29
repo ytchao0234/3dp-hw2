@@ -50,9 +50,9 @@ bool BasicTutorial_00::mouseMoved(const OIS::MouseEvent& arg)
 	}
 
 	if (mFlgSelectNow == true) {
-		Ray mRay = mTrayMgr->getCursorRay(mCamera);
+		Ray ray = mTrayMgr->getCursorRay(mCamera);
 
-		Vector2 scn = mTrayMgr->sceneToScreen(mCamera, mRay.getOrigin());
+		Vector2 scn = mTrayMgr->sceneToScreen(mCamera, ray.getOrigin());
 		left = scn.x;
 		top = scn.y;
 
@@ -74,10 +74,10 @@ int BasicTutorial_00::singleClickSelect(const OIS::MouseEvent& arg, OIS::MouseBu
 {
 	int numSelectedObj = 0;	// number of selected objects
 
-	Ray mRay = mTrayMgr->getCursorRay(mCamera);
+	Ray ray = mTrayMgr->getCursorRay(mCamera);
 
 	mRaySceneQuery->setSortByDistance(true);
-	mRaySceneQuery->setRay(mRay);
+	mRaySceneQuery->setRay(ray);
 
 	// Perform the scene query
 	RaySceneQueryResult& result = mRaySceneQuery->execute();
@@ -172,24 +172,11 @@ int BasicTutorial_00::volumeSelection(
 
 void BasicTutorial_00::computeTargetPosition()
 {
-	Ray mRay = mTrayMgr->getCursorRay(mCamera);
-
-	mRaySceneQuery->setSortByDistance(true);
-	mRaySceneQuery->setRay(mRay);
-
-	// Perform the scene query
-	RaySceneQueryResult& result = mRaySceneQuery->execute();
-	RaySceneQueryResult::iterator itr;
-
-	for (itr = result.begin(); itr != result.end(); ++itr)
-	{
-		if (itr->movable && itr->movable->getName() == "Floor")
-		{
-			mTargetPosition = mRay.getPoint(itr->distance);
-			mFlgTarget = true;
-			break;
-		}
-	}
+	Ray ray = mTrayMgr->getCursorRay(mCamera);
+	Plane p(Vector3::UNIT_Y, 0);
+	std::pair<bool, Real> result = ray.intersects(p);
+	mTargetPosition = ray.getOrigin() + result.second * ray.getDirection();
+	mFlgTarget = result.first;
 }
 
 
@@ -308,9 +295,9 @@ bool BasicTutorial_00::mousePressed(const OIS::MouseEvent& arg, OIS::MouseButton
 
 	mFlgSelectNow = true;
 
-	Ray mRay = mTrayMgr->getCursorRay(mCamera);
+	Ray ray = mTrayMgr->getCursorRay(mCamera);
 
-	Vector2 scn = mTrayMgr->sceneToScreen(mCamera, mRay.getOrigin());
+	Vector2 scn = mTrayMgr->sceneToScreen(mCamera, ray.getOrigin());
 	left = scn.x;
 	top = scn.y;
 	right = scn.x;

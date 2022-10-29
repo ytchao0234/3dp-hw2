@@ -153,6 +153,7 @@ void BasicTutorial_00::updateObjects_Positions(Real dt)
 
 		if (robotTargetDistance < 1.0) {
 			mSceneNodeArr[i]->showBoundingBox(false);
+			mSound->play();
 			continue;
 		}
 
@@ -160,9 +161,15 @@ void BasicTutorial_00::updateObjects_Positions(Real dt)
 		Vector3 robotLookAtPosition = mTargetPosition;
 		robotLookAtPosition.y = mSceneNodeArr[i]->getPosition().y;
 		mSceneNodeArr[i]->translate(mObjectDisplacement[i]);
+
+		Quaternion q0 = mSceneNodeArr[i]->getOrientation();
 		mSceneNodeArr[i]->lookAt(robotLookAtPosition, Node::TS_WORLD);
 		mSceneNodeArr[i]->yaw(Degree(READER_DATA::getYawAngleDegreeOffset_Pet()));
+		Quaternion q1 = mSceneNodeArr[i]->getOrientation();
+		mSceneNodeArr[i]->setOrientation(Ogre::Quaternion::Slerp(2*dt, q0, q1, true));
 	}
+
+	mMovingObjectsCounter->setScore(mNumOfMovingObj, .05, 0.05);
 }
 
 void BasicTutorial_00::updateObjects_Animation(Real dt)

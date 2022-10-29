@@ -70,6 +70,7 @@ void BasicTutorial_00::createScene_Setup(void)
 	mSelectionRect->setCastShadows(false);
 
 	mPetCounter = new DIGIT_STRING_DIALOGUE(mSceneMgr);
+	mMovingObjectsCounter = new DIGIT_STRING_DIALOGUE(mSceneMgr);
 
 	mFlgSelectNow = false;
 }

@@ -217,7 +217,7 @@ void BasicTutorial_00::createSphere()
 	sphere_scn->attachObject(sphere_ent);
 	auto bb = sphere_ent->getBoundingBox();
 	Real sizeX = bb.getMaximum().x - bb.getMinimum().x;
-	Real sf = 2.0 * mSphere_Radius / sizeX;
+	Real sf = mSphere_Radius / sizeX;
 	sphere_scn->setScale(sf, sf, sf);
 }
 

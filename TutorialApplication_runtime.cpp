@@ -41,29 +41,56 @@ void BasicTutorial_00
 	int objA
 	, int objB
 	, float rA
-	, float rB)
+	, float rB
+	, Real dt)
 {
+	Vector3 posA = mSceneNodeArr[objA]->getPosition();
+	Vector3 posB = mSceneNodeArr[objB]->getPosition();
+	float distance = posA.distance(posB);
 
+	if (distance > rA + rB) return;
+
+	Real b = rA + rB - distance;
+	Vector3 v = (posA - posB) / distance;
+	Real f = 0.7f;
+	posA = posA +    f  * b * v * dt;
+	posB = posB - (1-f) * b * v * dt;
+	mSceneNodeArr[objA]->setPosition(posA);
+	mSceneNodeArr[objB]->setPosition(posB);
 }
 
 //
 // Detect and resolve collisions of objects.
 //
-void BasicTutorial_00::resolveCollisionForObjects()
+void BasicTutorial_00::resolveCollisionForObjects(Real dt)
 {
-	float ri = 25; // object radius
+	float ri = 50; // object radius
 	float rj = 25; // object radius
-	for (int i = 0; i < mNumofObjects; ++i)
+	for (int i = 0; i < mNumofObjects; ++i, ri = 25)
 	{
 		for (int j = i + 1; j < mNumofObjects; ++j) {
-			resolveCollisionObjectPair(i, j, ri, rj);
+			resolveCollisionObjectPair(i, j, ri, rj, dt);
 		}
 	}
 }
 
-void BasicTutorial_00::resolveCollisionBetweenObjectsAndSphere()
+void BasicTutorial_00::resolveCollisionBetweenObjectsAndSphere(Real dt)
 {
+	float distance, r = 50; // object radius
+	Vector3 posRobot, posSphere = mSphere_Node->getPosition();
 
+	for (int i = 0; i < mNumofObjects; ++i, r = 25)
+	{
+		posRobot = mSceneNodeArr[i]->getPosition();
+		distance = posRobot.distance(posSphere);
+
+		if (distance > r + mSphere_Radius) continue;
+
+		Real b = r + mSphere_Radius - distance;
+		Vector3 v = (posRobot - posSphere) / distance;
+		posRobot = posRobot + b * v * dt;
+		mSceneNodeArr[i]->setPosition(posRobot);
+	}
 }
 //
 // Perform collision handling.
@@ -76,9 +103,9 @@ void BasicTutorial_00::performCollisionHandling(Real dt)
 	// The collision response does not resolve all objects at one time.
 	// Call resolveCollisionForObjects for multiple times.
 	for (int i = 0; i < 10; ++i) {
-		resolveCollisionForObjects();
+		resolveCollisionForObjects(dt);
 	}
-	resolveCollisionBetweenObjectsAndSphere();
+	resolveCollisionBetweenObjectsAndSphere(dt);
 }
 
 //

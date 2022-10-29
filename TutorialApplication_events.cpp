@@ -200,7 +200,11 @@ bool BasicTutorial_00::keyPressed(const OIS::KeyEvent& arg)
 	}
 
 	if (arg.key == OIS::KC_N) {
+		std::cout << "N pressed" << std::endl;
 		mFlg_EnableParticleSystem = !mFlg_EnableParticleSystem;
+
+		if (mFlg_EnableParticleSystem) mFXManager->enableAllParticleSystems();
+		else mFXManager->disableAllParticleSystems();
 		return true;
 	}
 

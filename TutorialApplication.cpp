@@ -53,7 +53,7 @@ mSound = new SOUND;
 	mPetCounter = nullptr;
 	mNumberOfPets = 0;
 	//
-	mSphere_Radius = 70;
+	mSphere_Radius = 140;
 	mObject_radius = 20.0;
 	//
 	mNumofObjects = 0;

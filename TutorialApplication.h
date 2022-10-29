@@ -124,11 +124,11 @@ protected:
 	virtual bool mouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id);
 	virtual bool frameStarted(const FrameEvent& evt);
 	//
-	void resolveCollisionObjectPair(int objA, int objB, float rA, float rB);
+	void resolveCollisionObjectPair(int objA, int objB, float rA, float rB, Real dt);
 
-	void resolveCollisionBetweenObjectsAndSphere( );
+	void resolveCollisionBetweenObjectsAndSphere(Real dt);
 
-	void resolveCollisionForObjects();
+	void resolveCollisionForObjects(Real dt);
 	//
 	void updateObjects_Positions(Real dt);
 	void updateObjects_Animation(Real dt);

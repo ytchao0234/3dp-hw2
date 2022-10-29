@@ -28,8 +28,8 @@ public:
         setUseIdentityProjection(true);
         setUseIdentityView(true);
         setRenderQueueGroup(RENDER_QUEUE_OVERLAY);
-        //setQueryFlags(0);
-		//setVisibilityFlags(0x0002);
+        setQueryFlags(0);
+		setVisibilityFlags(0x0002);
     }
 
 	void setCorners(float left, float top, float right, float bottom)

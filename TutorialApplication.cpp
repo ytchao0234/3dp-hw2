@@ -40,6 +40,7 @@ mFlg_Floor_Motion(false)
 , mFloor_VSpeed(0.0)
 , mEnabledObjectAnimation( true )
 , mEnabledLightAnimation( true )
+, mMiniMapFactor(1)
 {
 mSound = new SOUND;
 	mSound->init();
@@ -103,8 +104,8 @@ void BasicTutorial_00::createCamera_MiniMap(void)
 {
 	mCameraMap = mSceneMgr->createCamera("MapCamera");
 
-	mCameraMap->setPosition(Ogre::Vector3(0, 10, 0));
-	mCameraMap->lookAt(Ogre::Vector3(0, 0, 0.001));
+	mCameraMap->setPosition(Ogre::Vector3(0, 1400, 0.001));
+	mCameraMap->lookAt(Ogre::Vector3(0, 0, 0));
 
 	mCameraMap->setNearClipDistance(SystemParameter::nearClipDistance);
 }
@@ -151,6 +152,9 @@ void BasicTutorial_00::createViewport_MiniMap()
 		, mMiniMap_Dimension.w
 		, mMiniMap_Dimension.z);
 	
+	vp->setBackgroundColour(Ogre::ColourValue(1, 1, 0));
+	vp->setVisibilityMask(VIS_MASK_MINMAP);
+	vp->setSkiesEnabled(false);
 	vp->setOverlaysEnabled(false);
 
 	//vp->setBackgroundColour(Ogre::ColourValue(1, 1, 0));
@@ -163,7 +167,7 @@ void BasicTutorial_00::createViewport_MiniMap()
 	//	Ogre::Real(4*vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
 	mCameraMap->setAspectRatio(
-		Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+		mMiniMapFactor * Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
 	mViewport_Map = vp;
 

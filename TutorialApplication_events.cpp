@@ -43,9 +43,10 @@ bool BasicTutorial_00::mouseMoved(const OIS::MouseEvent& arg)
 
 	if (arg.state.Z.rel != 0) {
 		Vector3 p = mCamera->getPosition();
+		Vector3 d = mCamera->getDirection();
 
-		Real dy = arg.state.Z.rel / 20.0;
-		p.y -= dy;
+		Real dy = arg.state.Z.rel / 10.0;
+		p -= dy * d;
 		mCamera->setPosition(p);
 	}
 
@@ -196,7 +197,15 @@ bool BasicTutorial_00::keyPressed(const OIS::KeyEvent& arg)
 
 	if (arg.key == OIS::KC_SLASH)
 	{
-		// minimap
+		mFlgShowMap = !mFlgShowMap;
+		
+		if (mFlgShowMap) 
+			mViewport_Map->setDimensions(
+				mMiniMap_Dimension.x
+				, mMiniMap_Dimension.y
+				, mMiniMap_Dimension.w
+				, mMiniMap_Dimension.z);
+		else mViewport_Map->setDimensions(0, 0, 0, 0);
 	}
 
 	if (arg.key == OIS::KC_N) {
@@ -213,48 +222,88 @@ bool BasicTutorial_00::keyPressed(const OIS::KeyEvent& arg)
 		return true;
 	}
 
-	if (arg.key == OIS::KC_1) {
-		return true;
-	}
-
-	if (arg.key == OIS::KC_2) {
-		return true;
-	}
-
-	if (arg.key == OIS::KC_3) {
-	}
-
 	if (arg.key == OIS::KC_F1) {
-		//if (mEntity_Floor) mEntity_Floor->setMaterialName("Examples/Rocky");
+		if (mEntity_Floor) mEntity_Floor->setMaterialName("Examples/Rocky");
 
 		return true;
 	}
 
 	if (arg.key == OIS::KC_F2) {
-		//if (mEntity_Floor) mEntity_Floor->setMaterialName("Examples/Tens");
+		if (mEntity_Floor) mEntity_Floor->setMaterialName("Examples/Tens");
 
 		return true;
 	}
 
 	if (arg.key == OIS::KC_F3) {
-		//if (mEntity_Floor) mEntity_Floor->setMaterialName("Examples/WaterStream");
+		if (mEntity_Floor) mEntity_Floor->setMaterialName("Examples/WaterStream");
 
 		return true;
 	}
 
-	if (arg.key == OIS::KC_9) {
+	if (arg.key == OIS::KC_1) {
+		if (mSceneNode_Ground) {
+			Vector3 pos = mSceneNode_Ground->getPosition();
+			mSceneNode_Ground->setPosition(pos - 2.0 * Vector3::UNIT_Y);
+		}
+		return true;
 	}
 
-	if (arg.key == OIS::KC_0) {
+	if (arg.key == OIS::KC_2) {
+		if (mSceneNode_Ground) {
+			Vector3 pos = mSceneNode_Ground->getPosition();
+			mSceneNode_Ground->setPosition(pos + 2.0 * Vector3::UNIT_Y);
+		}
+		return true;
+	}
 
+	if (arg.key == OIS::KC_3) {
+		if (mEntity_Ground)
+		{
+			int flg = mEntity_Ground->getVisibilityFlags();
+			if (flg) mEntity_Ground->setVisibilityFlags(0x0000);
+			else mEntity_Ground->setVisibilityFlags(VIS_MASK_MINMAP);
+		}
+		return true;
+	}
+
+	if (arg.key == OIS::KC_4) {
+		mMiniMapFactor -= 0.25;
+
+		if( mMiniMapFactor < 0.25 ) mMiniMapFactor = 0.25;
+		mCameraMap->setAspectRatio(
+			mMiniMapFactor * Ogre::Real(mViewport_Map->getActualWidth()) / Ogre::Real(mViewport_Map->getActualHeight()));
+		return true;
+	}
+
+	if (arg.key == OIS::KC_5) {
+		mMiniMapFactor += 0.25;
+
+		if( mMiniMapFactor > 4 ) mMiniMapFactor = 4;
+		mCameraMap->setAspectRatio(
+			mMiniMapFactor * Ogre::Real(mViewport_Map->getActualWidth()) / Ogre::Real(mViewport_Map->getActualHeight()));
+		return true;
 	}
 
 	if (arg.key == OIS::KC_7) {
+		ColourValue intensity = mSceneMgr->getAmbientLight();
+		mSceneMgr->setAmbientLight(intensity - ColourValue(0.2, 0.2, 0.2));
 	}
 
 	if (arg.key == OIS::KC_8) {
+		ColourValue intensity = mSceneMgr->getAmbientLight();
+		mSceneMgr->setAmbientLight(intensity + ColourValue(0.2, 0.2, 0.2));
 	}
 
+
+	if (arg.key == OIS::KC_9) {
+		ColourValue intensity = mLight_Point->getDiffuseColour();
+		mLight_Point->setDiffuseColour(intensity - ColourValue(0.2, 0.2, 0.2));
+	}
+
+	if (arg.key == OIS::KC_0) {
+		ColourValue intensity = mLight_Point->getDiffuseColour();
+		mLight_Point->setDiffuseColour(intensity + ColourValue(0.2, 0.2, 0.2));
+	}
 
 
 

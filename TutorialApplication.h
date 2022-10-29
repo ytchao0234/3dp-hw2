@@ -59,6 +59,7 @@ private:
 	SceneNode* mLightSceneNode;
 
 	Real mMiniMapFactor;
+	bool mFlgShowMap;
 	Viewport* mViewport_Map;
 	Vector4 mMiniMap_Dimension;
 	Camera* mCameraMap;

@@ -41,6 +41,7 @@ mFlg_Floor_Motion(false)
 , mEnabledObjectAnimation( true )
 , mEnabledLightAnimation( true )
 , mMiniMapFactor(1)
+, mFlgShowMap(true)
 {
 mSound = new SOUND;
 	mSound->init();

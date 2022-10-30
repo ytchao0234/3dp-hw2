@@ -45,7 +45,7 @@ mFlg_Floor_Motion(false)
 {
 mSound = new SOUND;
 	mSound->init();
-    mSound->play();
+    // mSound->play();
 	//
     mFXManager = 0;
     mFlg_EnableParticleSystem = true;

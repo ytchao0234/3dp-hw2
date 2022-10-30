@@ -163,14 +163,13 @@ void BasicTutorial_00::setOffParticleSystem(
 void BasicTutorial_00::updateObjects_Positions(Real dt)
 {
 	mNumOfMovingObj = 0;
-	if (mFlgTarget == false) return;
-
 	for (int i = 0; i < mNumofObjects; ++i)
 	{
 		bool flgShow = mSceneNodeArr[i]->getShowBoundingBox();
 		if (flgShow == false) continue;
-		
 		++mNumOfMovingObj;
+		if (mFlgTarget == false) continue;
+
 		Vector3 direction = mTargetPosition - mSceneNodeArr[i]->getPosition();
 		Real robotTargetDistance = direction.length();
 		if (robotTargetDistance != 0.0)

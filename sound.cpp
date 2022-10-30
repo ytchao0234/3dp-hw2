@@ -37,6 +37,7 @@ The source code is from "PlayStatic Test Application" in OpenAL SDK.
 
 #define	TEST_WAVE_FILE1		"stereo.wav"
 #define	TEST_WAVE_FILE2		"stereo.wav"
+#define	GREAT_WAVE_FILE		"great.wav"
 
 SOUND::SOUND()
 {
@@ -78,9 +79,9 @@ SOUND::~SOUND()
 bool SOUND::setFileName(char *a_FileName)
 {
 		// Load Wave file into OpenAL Buffer
-	if (!ALFWLoadWaveToBuffer((char*)ALFWaddMediaPath(TEST_WAVE_FILE1), uiBuffer))
+	if (!ALFWLoadWaveToBuffer((char*)ALFWaddMediaPath(a_FileName), uiBuffer))
 	{
-		ALFWprintf("Failed to load %s\n", ALFWaddMediaPath(TEST_WAVE_FILE1));
+		ALFWprintf("Failed to load %s\n", ALFWaddMediaPath(a_FileName));
 	}
 
 	// Generate a Source to playback the Buffer
@@ -110,7 +111,7 @@ bool SOUND::init()
 	alGenBuffers( 1, &uiBuffer );
 
 
-	setFileName(TEST_WAVE_FILE1);
+	setFileName(GREAT_WAVE_FILE);
 	//play();
 	return 0;
 }

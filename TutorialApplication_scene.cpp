@@ -79,12 +79,12 @@ void BasicTutorial_00::createLights()
 {
 	Light* light = mSceneMgr->createLight("Light1");
 	light->setType(Light::LT_POINT);
-	light->setPosition(SystemParameter::radius * std::cos(0.0), 600, SystemParameter::radius * std::sin(0.0));
 	light->setDiffuseColour(0.6, 0.6, 0.6);		
 	light->setSpecularColour(1.0, 1.0, 1.0);	
 	mLight_Point = light;
 	mLightSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	mLightSceneNode->attachObject(light);
+	mLightSceneNode->setPosition(SystemParameter::radius * std::cos(0.0), 600, SystemParameter::radius * std::sin(0.0));
 }
 
 void BasicTutorial_00::createPlaneObjectResource()

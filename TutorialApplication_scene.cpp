@@ -58,8 +58,8 @@ void BasicTutorial_00::createScene_Setup(void)
 	mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
 	mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
 
-	// ColourValue fadeColour(1.0, 1.0, 1.0);
-	// mSceneMgr->setFog(FOG_LINEAR, fadeColour, 0, 1400, 1600);
+	ColourValue fadeColour(1.0, 1.0, 1.0);
+	mSceneMgr->setFog(FOG_LINEAR, fadeColour, 0, 1400, 1600);
 
 	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
